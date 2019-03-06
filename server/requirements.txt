@@ -8,7 +8,6 @@ decorator
 earthengine-api
 ecdsa
 ethtool
-GDAL
 google-api-python-client
 httplib2
 iniparse
