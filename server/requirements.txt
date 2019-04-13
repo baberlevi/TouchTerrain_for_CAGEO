@@ -6,6 +6,7 @@ Pillow
 pycrypto
 pyOpenSSL
 PyYAML
+setuptools
 requests
 vectors
 webapp2
