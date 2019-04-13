@@ -32,7 +32,7 @@ try:
         if google_maps_key == "Put your Google Maps key here":
             google_maps_key = ""
         else:
-            print "Google Maps key is:", google_maps_key
+            print("Google Maps key is:", google_maps_key)
             pass
 except:
     pass # file did not exist - no problem
@@ -92,14 +92,14 @@ class MainPage(webapp2.RequestHandler):
     try:
         ee.Initialize() # uses .config/earthengine/credentials
     except Exception as e:
-        print >> sys.stderr, "EE init() error (with .config/earthengine/credentials)", e
+        print("EE init() error (with .config/earthengine/credentials)", e, file=sys.stderr)
  
         try:
             # try authenticating with a .pem file
             import config  # sets location of .pem file, config.py must be in this folder
             ee.Initialize(config.EE_CREDENTIALS, config.EE_URL)
         except Exception as e:
-            print >> sys.stderr, "EE init() error (with config.py and .pem file)", e      
+            print("EE init() error (with config.py and .pem file)", e, file=sys.stderr)      
 
 
     #print self.request.GET # all args
@@ -198,8 +198,8 @@ class preflight(webapp2.RequestHandler):
         self.initialize(request, response)
         app = webapp2.get_app()
         app.registry['preflightrequest'] = self.request
-        print "preflight app.registry is", app.registry
-        print app.registry['preflightrequest'] #Levi I don't know why, but without this, complains about expired request
+        print("preflight app.registry is", app.registry)
+        print(app.registry['preflightrequest']) #Levi I don't know why, but without this, complains about expired request
 
 
     def post(self):
@@ -235,7 +235,7 @@ class ExportToFile(webapp2.RequestHandler):
         self.response.out.write('<html><body>')
         self.response.out.write('<h2>Processing finished:</h2>')
         
-        print self.request.params     
+        print(self.request.params)     
 
         # debug: print/log all args and then values
         args = {} # put arg name and value in a dict as key:value
@@ -244,7 +244,7 @@ class ExportToFile(webapp2.RequestHandler):
             v = self.request.get(k) # key = name of arg
             args[k] = v # value
             if k not in ["DEM_name", "fileformat", "manual"]: args[k] = float(args[k]) # floatify non-string args
-            print k, args[k]
+            print(k, args[k])
             
         # decode any extra (manual) args and put them in args dict
         manual = args["manual"] 
@@ -253,9 +253,9 @@ class ExportToFile(webapp2.RequestHandler):
             del args["manual"]
             try:
                 extra_args = json.loads(JSON_str)
-            except Exception, e:
+            except Exception as e:
                 logging.error(e)
-                print e
+                print(e)
             else:
                 for k in extra_args:
                     args[k] = extra_args[k] # append/overwrite
@@ -300,7 +300,7 @@ class ExportToFile(webapp2.RequestHandler):
         if pr > 0: # print res given by user (width and height are in mm)
             height = width * (dlat / float(dlon))
             tot_pix = int(((width / float(pr)) * (height / float(pr))) / div_by) # total pixels to print
-            print >> sys.stderr, "total requested pixels to print", tot_pix, ", max is", MAX_CELLS_PERMITED
+            print("total requested pixels to print", tot_pix, ", max is", MAX_CELLS_PERMITED, file=sys.stderr)
         else:
             # source resolution  (estimates the total number of cells from area and arc sec resolution of source)
             
@@ -311,7 +311,7 @@ class ExportToFile(webapp2.RequestHandler):
             cell_width_arcsecs = {"""USGS/NED""":1/9.0, """USGS/GMTED2010""":7.5, """NOAA/NGDC/ETOPO1""":30, """USGS/SRTMGL1_003""":1} # in arcseconds!            
             cwas = float(cell_width_arcsecs[DEM_name])
             tot_pix = int((((dlon * 3600) / cwas) *  ((dlat *3600) / cwas)) / div_by)
-            print >> sys.stderr, "total requested pixels to print at a source resolution of", round(cwas,2), "arc secs is ", tot_pix, ", max is", MAX_CELLS_PERMITED
+            print("total requested pixels to print at a source resolution of", round(cwas,2), "arc secs is ", tot_pix, ", max is", MAX_CELLS_PERMITED, file=sys.stderr)
 
         if tot_pix >  MAX_CELLS_PERMITED:
             self.response.out.write("<br>Your requested job is too large! Please reduce area (red box) or lower the print resolution")
@@ -338,17 +338,17 @@ class ExportToFile(webapp2.RequestHandler):
         try:
             # create zip and write to tmp
             totalsize, full_zip_zile_name = TouchTerrainEarthEngine.get_zipped_tiles(**args) # all args are in a dict
-        except Exception, e:
+        except Exception as e:
             logging.error(e)
-            print e
+            print(e)
             self.response.out.write("Error:" + str(e))
             return
 
         if totalsize < 0: # something went wrong, error message is in full_zip_zile_name
-            print >> sys.stderr, "Error:", full_zip_zile_name
+            print("Error:", full_zip_zile_name, file=sys.stderr)
             self.response.out.write(full_zip_zile_name)
         else:    
-            print >> sys.stderr, "Finished processing", full_zip_zile_name
+            print("Finished processing", full_zip_zile_name, file=sys.stderr)
             self.response.out.write("total zipped size: %.2f Mb<br>" % totalsize)
     
             self.response.out.write('<br><form action="tmp/%s.zip" method="GET" enctype="multipart/form-data">' % (fname))
@@ -367,6 +367,6 @@ app = webapp2.WSGIApplication([('/', MainPage), # index.html
 
 if SERVER_TYPE == "paste":
     from paste import httpserver
-    print "running local httpserver ,",
+    print("running local httpserver ,", end=' ')
     httpserver.serve(app, host='127.0.0.1', port='8080') # run the server
-print "end of TouchTerrain_app.py"
+print("end of TouchTerrain_app.py")
