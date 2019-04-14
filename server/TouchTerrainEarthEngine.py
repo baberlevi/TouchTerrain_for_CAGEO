@@ -33,8 +33,8 @@ from zipfile import ZipFile
 
 import http.client
 
-from .grid_tesselate import grid      # my own grid class, creates a mesh from DEM raster
-from .Coordinate_system_conv import * # arc to meters conversion
+from grid_tesselate import grid      # my own grid class, creates a mesh from DEM raster
+from Coordinate_system_conv import * # arc to meters conversion
 
 import numpy
 from PIL import Image
