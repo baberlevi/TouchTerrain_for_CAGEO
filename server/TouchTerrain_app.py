@@ -46,8 +46,8 @@ from os.path import abspath, dirname
 top = abspath(__file__)
 this_folder = dirname(top)
 tmp_folder = this_folder + os.sep + "tmp"  # dir to store zip files and temp tile files
-common_folder = dirname(this_folder) + os.sep + "common"
-sys.path.append(common_folder) # add common folder to sys.path
+#not needed #common_folder = dirname(this_folder) + os.sep + "common"
+#not needed #sys.path.append(common_folder) # add common folder to sys.path
 #print >> sys.stderr, "sys.path:", sys.path
 import TouchTerrainEarthEngine
 from Coordinate_system_conv import * # arc to meters conversion
